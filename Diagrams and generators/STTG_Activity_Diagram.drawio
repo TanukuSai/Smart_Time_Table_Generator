@@ -1,0 +1,160 @@
+<mxfile host="app.diagrams.net" modified="2026-04-22T02:30:00.000Z" agent="draw.io" version="24.0.0">
+  <diagram name="Activity Diagram" id="activity1">
+    <mxGraphModel dx="1200" dy="2200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="900" pageHeight="2000" math="0" shadow="1">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Start Node -->
+        <mxCell id="s1" value="Start" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#d5e8d4;strokeColor=#82b366;shadow=1;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="345" y="15" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <!-- A1: Admin Logs In -->
+        <mxCell id="a1" value="Admin Logs In" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="305" y="80" width="200" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="s1" target="a1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- A2: Setup -->
+        <mxCell id="a2" value="Setup: Departments, Faculty,&#xa;Subjects, Rooms" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="280" y="160" width="250" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a1" target="a2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- A3: Define Constraints -->
+        <mxCell id="a3" value="Define Hard / Soft Constraints" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="280" y="245" width="250" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a2" target="a3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- A4: Trigger Generation -->
+        <mxCell id="a4" value="Trigger Timetable Generation" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="280" y="325" width="250" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a3" target="a4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- A5: Execute CSP -->
+        <mxCell id="a5" value="Execute CSP + Backtracking&#xa;Algorithm" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="280" y="405" width="250" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a4" target="a5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- D1: Conflicts Found? -->
+        <mxCell id="d1" value="Conflicts&#xa;Found?" style="rhombus;whiteSpace=wrap;html=1;shadow=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="355" y="490" width="100" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a5" target="d1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Yes: Backtrack -->
+        <mxCell id="a6" value="Backtrack &amp;&#xa;Reassign Slot" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="510" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" value="Yes" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontStyle=1;fontSize=11;fontColor=#b85450;" edge="1" source="d1" target="a6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <!-- Loop back to A5 -->
+        <mxCell id="e8" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;curved=1;" edge="1" source="a6" target="a5" parent="1">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="60" y="430"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- No: Save as Draft -->
+        <mxCell id="a7" value="Save as Draft" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="590" y="510" width="160" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" value="No" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontStyle=1;fontSize=11;fontColor=#82b366;" edge="1" source="d1" target="a7" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- A8: Admin Reviews -->
+        <mxCell id="a8" value="Admin Reviews Draft Timetable" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="280" y="610" width="250" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a7" target="a8" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- D2: Approve? -->
+        <mxCell id="d2" value="Approve?" style="rhombus;whiteSpace=wrap;html=1;shadow=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="355" y="695" width="100" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a8" target="d2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- No: Edit Manually -->
+        <mxCell id="a9" value="Edit Slots&#xa;Manually" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="715" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e12" value="No" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontStyle=1;fontSize=11;fontColor=#d6b656;" edge="1" source="d2" target="a9" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e13" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;curved=1;" edge="1" source="a9" target="a8" parent="1">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="60" y="630"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- Yes: Publish -->
+        <mxCell id="a10" value="Publish Timetable" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="590" y="715" width="170" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e14" value="Yes" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontStyle=1;fontSize=11;fontColor=#82b366;" edge="1" source="d2" target="a10" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Separator -->
+        <mxCell id="sep" value="— Smart Substitution Flow —" style="text;html=1;align=center;verticalAlign=middle;rounded=1;shadow=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;fontStyle=1;strokeWidth=1.5;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="270" y="820" width="270" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="sepline1" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#d6b656;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="60" y="835" as="sourcePoint"/><mxPoint x="270" y="835" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="sepline2" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#d6b656;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="540" y="835" as="sourcePoint"/><mxPoint x="760" y="835" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e15" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a10" target="sep" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- A11: Faculty Leave -->
+        <mxCell id="a11" value="Faculty Submits Leave Request" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="265" y="885" width="280" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e16" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="sep" target="a11" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- A12: Admin Reviews Leave -->
+        <mxCell id="a12" value="Admin Reviews Leave Request" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="275" y="965" width="260" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e17" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a11" target="a12" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- D3: Approved? -->
+        <mxCell id="d3" value="Approved?" style="rhombus;whiteSpace=wrap;html=1;shadow=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="355" y="1050" width="100" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="e18" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a12" target="d3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- No: Leave Denied -->
+        <mxCell id="a13" value="Leave Denied" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1070" width="150" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e19" value="No" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontStyle=1;fontSize=11;fontColor=#b85450;" edge="1" source="d3" target="a13" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <!-- End node for denied -->
+        <mxCell id="end1" value="End" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#f8cecc;strokeColor=#b85450;shadow=1;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1150" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e20" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a13" target="end1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Yes: Run Smart Sub -->
+        <mxCell id="a14" value="Run Smart&#xa;Substitution" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="590" y="1060" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e21" value="Yes" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontStyle=1;fontSize=11;fontColor=#82b366;" edge="1" source="d3" target="a14" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- A15: Save Sub TT -->
+        <mxCell id="a15" value="Save Substitution Timetable (Draft)" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="250" y="1160" width="310" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e22" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a14" target="a15" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- A16: Admin Publishes -->
+        <mxCell id="a16" value="Admin Reviews &amp; Publishes" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;arcSize=40;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1240" width="250" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e23" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a15" target="a16" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- End Node -->
+        <mxCell id="end2" value="End" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#f8cecc;strokeColor=#b85450;shadow=1;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="345" y="1315" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e24" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" edge="1" source="a16" target="end2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,142 @@
+<mxfile host="app.diagrams.net" modified="2026-04-22T02:30:00.000Z" agent="draw.io" version="24.0.0">
+  <diagram name="Sequence Diagram" id="seq1">
+    <mxGraphModel dx="1600" dy="1800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1600" pageHeight="1800" math="0" shadow="1">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Participant boxes -->
+        <mxCell id="p1" value="Admin" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2" value="Faculty" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="330" y="20" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3" value="STTG System" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="590" y="20" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="p4" value="Database" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="860" y="20" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="p5" value="Student" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="20" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="ll1" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#b0b0b0;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="60" as="sourcePoint"/><mxPoint x="145" y="1500" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll2" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#b0b0b0;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="395" y="60" as="sourcePoint"/><mxPoint x="395" y="1500" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll3" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#b0b0b0;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="60" as="sourcePoint"/><mxPoint x="660" y="1500" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll4" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#b0b0b0;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="925" y="60" as="sourcePoint"/><mxPoint x="925" y="1500" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll5" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#b0b0b0;strokeWidth=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1165" y="60" as="sourcePoint"/><mxPoint x="1165" y="1500" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Section 1: Setup -->
+        <mxCell id="sec1" value="1. Setup &amp; Data Entry" style="text;html=1;rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;strokeWidth=1.5;spacingLeft=5;spacingRight=5;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="80" width="170" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="m1" value="Login / Register" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="130" as="sourcePoint"/><mxPoint x="660" y="130" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m2" value="Create Departments, Subjects, Faculty, Rooms" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="180" as="sourcePoint"/><mxPoint x="660" y="180" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m3" value="Save Entities" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="230" as="sourcePoint"/><mxPoint x="925" y="230" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m4" value="Confirm Saved" style="endArrow=open;html=1;dashed=1;strokeWidth=1.5;fontSize=11;fontColor=#82b366;fontStyle=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="925" y="270" as="sourcePoint"/><mxPoint x="660" y="270" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m5" value="Define Scheduling Constraints" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="320" as="sourcePoint"/><mxPoint x="660" y="320" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m6" value="Store Constraints" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="360" as="sourcePoint"/><mxPoint x="925" y="360" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Section 2: Generation -->
+        <mxCell id="sec2" value="2. Timetable Generation" style="text;html=1;rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;strokeWidth=1.5;spacingLeft=5;spacingRight=5;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="410" width="180" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="m7" value="Request Generate Timetable" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="460" as="sourcePoint"/><mxPoint x="660" y="460" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m8" value="Fetch Entities &amp; Constraints" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="510" as="sourcePoint"/><mxPoint x="925" y="510" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m9" value="Return Data" style="endArrow=open;html=1;dashed=1;strokeWidth=1.5;fontSize=11;fontColor=#82b366;fontStyle=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="925" y="550" as="sourcePoint"/><mxPoint x="660" y="550" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <!-- Self-message: CSP -->
+        <mxCell id="m10" value="Execute CSP + Backtracking" style="endArrow=block;endFill=1;html=1;strokeWidth=1.3;fontSize=11;curved=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="665" y="590" as="sourcePoint"/><mxPoint x="665" y="630" as="targetPoint"/><Array as="points"><mxPoint x="780" y="610"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="m11" value="Save Timetable (status = draft)" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="670" as="sourcePoint"/><mxPoint x="925" y="670" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m12" value="Return Draft Timetable" style="endArrow=open;html=1;dashed=1;strokeWidth=1.5;fontSize=11;fontColor=#82b366;fontStyle=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="720" as="sourcePoint"/><mxPoint x="145" y="720" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m13" value="Review &amp; Publish Timetable" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="770" as="sourcePoint"/><mxPoint x="660" y="770" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m14" value="UPDATE status → published" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="810" as="sourcePoint"/><mxPoint x="925" y="810" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Section 3: Leave & Substitution -->
+        <mxCell id="sec3" value="3. Leave &amp; Smart Substitution" style="text;html=1;rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;strokeWidth=1.5;spacingLeft=5;spacingRight=5;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="860" width="210" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="m15" value="Submit Leave Request" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="395" y="910" as="sourcePoint"/><mxPoint x="660" y="910" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m16" value="Store Leave Request" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="950" as="sourcePoint"/><mxPoint x="925" y="950" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m17" value="Notify Admin: New Leave" style="endArrow=open;html=1;dashed=1;strokeWidth=1.5;fontSize=11;fontColor=#d6b656;fontStyle=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="990" as="sourcePoint"/><mxPoint x="145" y="990" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m18" value="Approve Leave" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="1040" as="sourcePoint"/><mxPoint x="660" y="1040" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m19" value="Update Faculty is_present = 0" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="1080" as="sourcePoint"/><mxPoint x="925" y="1080" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <!-- Self: Smart Sub -->
+        <mxCell id="m20" value="Smart Substitution Algorithm" style="endArrow=block;endFill=1;html=1;strokeWidth=1.3;fontSize=11;curved=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="665" y="1120" as="sourcePoint"/><mxPoint x="665" y="1160" as="targetPoint"/><Array as="points"><mxPoint x="780" y="1140"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="m21" value="Save Substitution Timetable (draft)" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="1200" as="sourcePoint"/><mxPoint x="925" y="1200" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m22" value="Return Substitution Draft" style="endArrow=open;html=1;dashed=1;strokeWidth=1.5;fontSize=11;fontColor=#82b366;fontStyle=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="660" y="1240" as="sourcePoint"/><mxPoint x="145" y="1240" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="m23" value="Review &amp; Publish Substitution" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="1290" as="sourcePoint"/><mxPoint x="660" y="1290" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Section 4: View -->
+        <mxCell id="sec4" value="4. View Timetable" style="text;html=1;rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;strokeWidth=1.5;spacingLeft=5;spacingRight=5;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="1350" width="150" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="m24" value="View Published Timetable" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1165" y="1400" as="sourcePoint"/><mxPoint x="660" y="1400" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
