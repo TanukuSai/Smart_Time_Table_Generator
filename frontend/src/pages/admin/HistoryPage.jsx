@@ -246,8 +246,8 @@ export default function HistoryPage() {
 
 function SnapshotGrid({ data, isDraft, historyId, dept, editingSlot, onStartEdit, onCancelEdit, editState, setEditState, onSaveEdit, faculty, subjects }) {
   if (!data) return null
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-  const presentDays = days.filter(d => data[d] && data[d].length > 0)
+  const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+  const presentDays = allDays.filter(d => data[d] && data[d].length > 0)
   if (presentDays.length === 0) return <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>No data for this department.</div>
 
   const maxSlots = Math.max(...presentDays.map(d => data[d].length))

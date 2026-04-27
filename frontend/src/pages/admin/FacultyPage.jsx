@@ -41,7 +41,8 @@ export default function FacultyPage() {
   const triggerEmergencyLeave = async (fac) => {
     if (!confirm(`Trigger Emergency Sick Leave for ${fac.name} today? This will automatically generate substitutions for their classes.`)) return
     try {
-      await api.post('/leaves/emergency', { faculty_id: fac.id })
+      const date = new Date().toLocaleDateString('en-CA');
+      await api.post('/leaves/emergency', { faculty_id: fac.id, date })
       toast.success(`Emergency leave triggered for ${fac.name}`)
       load()
     } catch (e) {
@@ -166,7 +167,7 @@ export default function FacultyPage() {
                     
                     <div style={{ marginBottom: 12 }}>
                       <label style={{ fontSize: 12, marginBottom: 4, display: 'block' }}>Max Weekly Hours</label>
-                      <input type="number" min="1" max="40" value={editMaxHours} onChange={e => setEditMaxHours(parseInt(e.target.value) || 20)} style={{ padding: '4px 8px', fontSize: 13, width: 100 }} />
+                      <input type="number" min="1" max="48" value={editMaxHours} onChange={e => setEditMaxHours(parseInt(e.target.value) || 20)} style={{ padding: '4px 8px', fontSize: 13, width: 100 }} />
                     </div>
 
                     <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 6 }}>Subjects taught</div>
@@ -278,7 +279,7 @@ export default function FacultyPage() {
             </div>
             <div>
               <label>Max Weekly Hours</label>
-              <input type="number" min="1" max="40" value={form.max_weekly_hours} onChange={e => setForm(p => ({...p, max_weekly_hours: parseInt(e.target.value)}))} />
+              <input type="number" min="1" max="48" value={form.max_weekly_hours} onChange={e => setForm(p => ({...p, max_weekly_hours: parseInt(e.target.value)}))} />
             </div>
           </div>
 

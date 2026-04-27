@@ -23,6 +23,7 @@ class LeaveReview(BaseModel):
 class EmergencyLeaveCreate(BaseModel):
     faculty_id: int
     reason: str = "Emergency Sick Leave (Admin)"
+    date: Optional[str] = None
 
 @router.get("")
 async def list_leaves(status: Optional[str] = None, db=Depends(get_db), user=Depends(get_current_user)):
@@ -114,8 +115,14 @@ async def create_emergency_leave(body: EmergencyLeaveCreate, db=Depends(get_db),
     if not fac:
         raise HTTPException(404, "Faculty not found")
 
-    from datetime import date
-    today_str = date.today().isoformat()
+    from datetime import date, datetime
+    if body.date:
+        try:
+            today_str = datetime.strptime(body.date, "%Y-%m-%d").date().isoformat()
+        except ValueError:
+            today_str = date.today().isoformat()
+    else:
+        today_str = date.today().isoformat()
 
     # Check if a leave request already exists for today
     existing = await db.fetchrow(

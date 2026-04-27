@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import api from '../../utils/api'
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 const TIMES_COUNT = 7
 
 export default function FacSchedule() {
@@ -9,10 +8,15 @@ export default function FacSchedule() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.get('/faculty/me/schedule').then(r => setSchedule(r.data)).finally(() => setLoading(false))
+    const todayStr = new Date().toLocaleDateString('en-CA')
+    api.get(`/faculty/me/schedule?date=${todayStr}`).then(r => setSchedule(r.data)).finally(() => setLoading(false))
   }, [])
 
   const getSlot = (day, idx) => schedule.find(s => s.day === day && s.slot_index === idx)
+
+  const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+  const activeDays = allDays.filter(d => schedule.some(s => s.day === d))
+  const DAYS = activeDays.length > 0 ? activeDays : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 
   if (loading) return <div style={{ textAlign: 'center', padding: 60 }}><div className="spinner" style={{ width: 28, height: 28 }} /></div>
 
@@ -34,17 +38,25 @@ export default function FacSchedule() {
               if (s.is_break) return <div key={i} className="cal-slot cal-slot-break">Break</div>
               if (!s.subject_name) return <div key={i} className="cal-slot cal-slot-free">Free</div>
               const isSub = s.is_substitution
+              const isAbsent = s.is_absent
               return (
                 <div key={i} className="cal-slot cal-slot-class" style={isSub ? {
                   borderLeft: '3px solid var(--amber)',
                   background: 'rgba(245,158,11,0.1)'
+                } : isAbsent ? {
+                  borderLeft: '3px solid var(--rose)',
+                  background: 'rgba(244,63,94,0.06)',
+                  opacity: 0.8
                 } : {}}>
-                  <div style={{ fontWeight: 600, fontSize: 11.5, color: isSub ? 'var(--amber)' : 'var(--amber-light)' }}>{s.subject_name}</div>
+                  <div style={{ fontWeight: 600, fontSize: 11.5, color: isSub ? 'var(--amber)' : isAbsent ? 'var(--rose)' : 'var(--amber-light)' }}>
+                    {s.subject_name}
+                  </div>
                   <div style={{ fontSize: 10.5, color: 'var(--text-secondary)', marginTop: 2 }}>
-                    {isSub ? `Sub for ${s.original_faculty_name}` : `Class ${s.grade_name}`}
+                    {isSub ? `Sub for ${s.original_faculty_name}` : isAbsent ? `Covered by ${s.substitute_faculty_name || 'TBD'}` : `Class ${s.grade_name}`}
                   </div>
                   <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{s.slot_time?.split('–')[0]}</div>
                   {isSub && <div style={{ fontSize: 9, color: 'var(--amber)', fontWeight: 700, marginTop: 2 }}>SUBSTITUTION</div>}
+                  {isAbsent && <div style={{ fontSize: 9, color: 'var(--rose)', fontWeight: 700, marginTop: 2 }}>ON LEAVE</div>}
                 </div>
               )
             })}
@@ -69,14 +81,16 @@ export default function FacSchedule() {
                   if (s.is_break) return <div key={day} className="tt-cell tt-break">Break</div>
                   if (!s.subject_name) return <div key={day} className="tt-cell" style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 11 }}>Free</div>
                   const isSub = s.is_substitution
+                  const isAbsent = s.is_absent
                   return (
-                    <div key={day} className="tt-cell tt-slot-fac-class" style={isSub ? { borderLeft: '3px solid var(--amber)', background: 'rgba(245,158,11,0.06)' } : {}}>
-                      <div className="tt-slot-sub" style={{ color: isSub ? 'var(--amber)' : 'var(--teal)' }}>{s.subject_name}</div>
+                    <div key={day} className="tt-cell tt-slot-fac-class" style={isSub ? { borderLeft: '3px solid var(--amber)', background: 'rgba(245,158,11,0.06)' } : isAbsent ? { borderLeft: '3px solid var(--rose)', background: 'rgba(244,63,94,0.06)', opacity: 0.8 } : {}}>
+                      <div className="tt-slot-sub" style={{ color: isSub ? 'var(--amber)' : isAbsent ? 'var(--rose)' : 'var(--teal)' }}>{s.subject_name}</div>
                       <div className="tt-slot-fac">
-                        {isSub ? `Sub for ${s.original_faculty_name}` : `Class ${s.grade_name}`}
+                        {isSub ? `Sub for ${s.original_faculty_name}` : isAbsent ? `Covered by ${s.substitute_faculty_name || 'TBD'}` : `Class ${s.grade_name}`}
                       </div>
                       <div className="tt-slot-room">{s.room_id || '—'}</div>
                       {isSub && <div style={{ fontSize: 9, color: 'var(--amber)', fontWeight: 700 }}>SUB</div>}
+                      {isAbsent && <div style={{ fontSize: 9, color: 'var(--rose)', fontWeight: 700 }}>ON LEAVE</div>}
                     </div>
                   )
                 })}

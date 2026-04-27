@@ -127,7 +127,7 @@ async def init_db():
             CREATE TABLE IF NOT EXISTS timetable_slots (
                 id SERIAL PRIMARY KEY,
                 department_id INTEGER REFERENCES departments(id) ON DELETE CASCADE,
-                day TEXT NOT NULL CHECK(day IN ('Mon','Tue','Wed','Thu','Fri')),
+                day TEXT NOT NULL CHECK(day IN ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')),
                 slot_index INTEGER NOT NULL,
                 slot_time TEXT NOT NULL,
                 subject_id INTEGER REFERENCES subjects(id),
@@ -140,6 +140,8 @@ async def init_db():
         """)
 
         await conn.execute("ALTER TABLE timetable_slots ADD COLUMN IF NOT EXISTS admin_id INTEGER")
+        await conn.execute("ALTER TABLE timetable_slots DROP CONSTRAINT IF EXISTS timetable_slots_day_check")
+        await conn.execute("ALTER TABLE timetable_slots ADD CONSTRAINT timetable_slots_day_check CHECK(day IN ('Mon','Tue','Wed','Thu','Fri','Sat','Sun'))")
 
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS timetable_history (

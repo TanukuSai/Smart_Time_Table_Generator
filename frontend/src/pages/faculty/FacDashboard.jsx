@@ -4,7 +4,6 @@ import { useAuth } from '../../context/AuthContext'
 import { RefreshCw } from 'lucide-react'
 import api from '../../utils/api'
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 
 export default function FacDashboard() {
   const { user } = useAuth()
@@ -24,7 +23,8 @@ export default function FacDashboard() {
     api.get('/faculty/me/substitutions').then(r => setSubstitutions(r.data)).catch(() => {})
   }, [])
 
-  const todayDay = DAYS[new Date().getDay() - 1] || 'Mon'
+  const jsDay = new Date().getDay()
+  const todayDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][jsDay]
   const todayClasses = schedule.filter(s => s.day === todayDay && !s.is_break && s.subject_name)
   const regularClasses = todayClasses.filter(s => !s.is_substitution)
   const subClasses = todayClasses.filter(s => s.is_substitution)

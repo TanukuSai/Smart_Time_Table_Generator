@@ -19,6 +19,10 @@ BREAK_SLOT = 3
 class GenerateRequest(BaseModel):
     department_ids: List[int]
     slots_per_day: int = 6
+    start_time: str = "08:00"
+    class_duration: int = 45
+    break_duration: int = 45
+    working_days: int = 6
 
 class SlotEditRequest(BaseModel):
     department_name: str
@@ -232,9 +236,18 @@ async def edit_draft_slot(history_id: int, body: SlotEditRequest, db=Depends(get
 
 # ──────────────── Live timetable with substitution overlay ────────────────
 
-async def _get_active_substitutions(db, admin_id: int, department_ids: list = None, for_admin: bool = False):
-    """Get active substitutions, filtered by time window for non-admin users."""
-    today = date.today()
+async def _get_active_substitutions(db, admin_id: int, department_ids: list = None, client_date_str: str = None):
+    """Get active substitutions, filtered by time window."""
+    from datetime import date, timedelta, datetime
+    
+    if client_date_str:
+        try:
+            today = datetime.strptime(client_date_str, "%Y-%m-%d").date()
+        except ValueError:
+            today = date.today()
+    else:
+        today = date.today()
+        
     tomorrow = today + timedelta(days=1)
     today_str = today.isoformat()
     tomorrow_str = tomorrow.isoformat()
@@ -253,7 +266,7 @@ async def _get_active_substitutions(db, admin_id: int, department_ids: list = No
         LEFT JOIN faculty f_sub ON sub.substitute_faculty_id = f_sub.id
         LEFT JOIN users u_sub ON f_sub.user_id = u_sub.id
         LEFT JOIN subjects s ON sub.subject_id = s.id
-        WHERE sub.admin_id = $1 AND lr.status = 'approved' AND sub.status = 'auto_assigned'
+        WHERE sub.admin_id = $1 AND lr.status = 'approved' AND sub.status IN ('auto_assigned', 'no_substitute', 'manually_assigned')
     """
     params = [admin_id]
 
@@ -261,18 +274,17 @@ async def _get_active_substitutions(db, admin_id: int, department_ids: list = No
         params.append(department_ids)
         base_query += f" AND sub.department_id = ANY(${len(params)}::int[])"
 
-    if not for_admin:
-        # Time window: only show on the day before and day of leave
-        params.append(today_str)
-        params.append(tomorrow_str)
-        base_query += f" AND lr.leave_date IN (${len(params)-1}, ${len(params)})"
+    # Time window: only show on the day before and day of leave
+    params.append(today_str)
+    params.append(tomorrow_str)
+    base_query += f" AND lr.leave_date IN (${len(params)-1}, ${len(params)})"
 
     rows = await db.fetch(base_query, *params)
     return rows
 
 
 @router.get("/{department_id}")
-async def get_timetable(department_id: int, db=Depends(get_db), user=Depends(get_current_user)):
+async def get_timetable(department_id: int, db=Depends(get_db), user=Depends(get_current_user), date: Optional[str] = None):
     admin_id = get_admin_id(user)
     dept = await db.fetchrow("SELECT id FROM departments WHERE id = $1 AND admin_id = $2", department_id, admin_id)
     if not dept:
@@ -293,8 +305,7 @@ async def get_timetable(department_id: int, db=Depends(get_db), user=Depends(get
     """, department_id, admin_id)
 
     # Get active substitutions
-    is_admin = user["role"] == "admin"
-    subs = await _get_active_substitutions(db, admin_id, [department_id], for_admin=is_admin)
+    subs = await _get_active_substitutions(db, admin_id, [department_id], client_date_str=date)
     sub_map = {}  # (day, slot_index) → substitution data
     for s in subs:
         sub_map[(s["day"], s["slot_index"])] = s
@@ -312,14 +323,13 @@ async def get_timetable(department_id: int, db=Depends(get_db), user=Depends(get
             slot["is_substituted"] = True
             slot["original_faculty_name"] = sub["original_faculty_name"]
             slot["substitute_faculty_name"] = sub["substitute_faculty_name"]
-            slot["faculty_name"] = sub["substitute_faculty_name"] or slot["faculty_name"]
+            slot["faculty_name"] = sub["substitute_faculty_name"] or "TBD"
         result[d].append(slot)
     return result
 
 @router.get("")
-async def get_all_timetables(db=Depends(get_db), user=Depends(get_current_user)):
+async def get_all_timetables(db=Depends(get_db), user=Depends(get_current_user), date: Optional[str] = None):
     admin_id = get_admin_id(user)
-    is_admin = user["role"] == "admin"
 
     # For students, only return their department's timetable
     if user["role"] == "student":
@@ -346,7 +356,7 @@ async def get_all_timetables(db=Depends(get_db), user=Depends(get_current_user))
         """, dept_ids, admin_id)
 
         # Get substitution overlay
-        subs = await _get_active_substitutions(db, admin_id, dept_ids, for_admin=False)
+        subs = await _get_active_substitutions(db, admin_id, dept_ids, client_date_str=date)
         sub_map = {(s["day"], s["slot_index"]): s for s in subs}
 
         if rows:
@@ -362,7 +372,7 @@ async def get_all_timetables(db=Depends(get_db), user=Depends(get_current_user))
                     slot["is_substituted"] = True
                     slot["original_faculty_name"] = sub["original_faculty_name"]
                     slot["substitute_faculty_name"] = sub["substitute_faculty_name"]
-                    slot["faculty_name"] = sub["substitute_faculty_name"] or slot["faculty_name"]
+                    slot["faculty_name"] = sub["substitute_faculty_name"] or "TBD"
                 days[day].append(slot)
             return {dept["name"]: {"department_id": dept["id"], "days": days}}
         return {}
@@ -383,7 +393,7 @@ async def get_all_timetables(db=Depends(get_db), user=Depends(get_current_user))
         """, g["id"], admin_id)
         if rows:
             # Get substitution overlay
-            subs = await _get_active_substitutions(db, admin_id, [g["id"]], for_admin=is_admin)
+            subs = await _get_active_substitutions(db, admin_id, [g["id"]], client_date_str=date)
             sub_map = {(s["day"], s["slot_index"]): s for s in subs}
 
             days = {}
@@ -398,7 +408,7 @@ async def get_all_timetables(db=Depends(get_db), user=Depends(get_current_user))
                     slot["is_substituted"] = True
                     slot["original_faculty_name"] = sub["original_faculty_name"]
                     slot["substitute_faculty_name"] = sub["substitute_faculty_name"]
-                    slot["faculty_name"] = sub["substitute_faculty_name"] or slot["faculty_name"]
+                    slot["faculty_name"] = sub["substitute_faculty_name"] or "TBD"
                 days[day].append(slot)
             result[g["name"]] = {"department_id": g["id"], "days": days}
     return result
@@ -411,7 +421,21 @@ async def generate_timetable(body: GenerateRequest, db=Depends(get_db), user=Dep
     log = []
     log.append("[CSP] Initializing constraint satisfaction engine...")
 
-    TIMES = ALL_TIMES[:body.slots_per_day]
+    TIMES = []
+    LOCAL_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][:body.working_days]
+    break_slot_idx = body.slots_per_day // 2
+    
+    start_dt = datetime.strptime(body.start_time, "%H:%M")
+    current_time = start_dt
+    for i in range(body.slots_per_day + 1):
+        if i == break_slot_idx:
+            end_time = current_time + timedelta(minutes=body.break_duration)
+            TIMES.append(f"{current_time.strftime('%H:%M')}–{end_time.strftime('%H:%M')}")
+            current_time = end_time
+        else:
+            end_time = current_time + timedelta(minutes=body.class_duration)
+            TIMES.append(f"{current_time.strftime('%H:%M')}–{end_time.strftime('%H:%M')}")
+            current_time = end_time
 
     # ---------- Load all enabled constraints for this admin ----------
     constraint_rows = await db.fetch("SELECT * FROM constraints WHERE is_enabled = 1 AND admin_id = $1", admin_id)
@@ -532,11 +556,13 @@ async def generate_timetable(body: GenerateRequest, db=Depends(get_db), user=Dep
                 continue
 
             scheduled = False
-            days_shuffled = list(DAYS)
+            days_shuffled = list(LOCAL_DAYS)
             random.shuffle(days_shuffled)
             
             for day in days_shuffled:
-                sessions = [ (0, 1, 2), (4, 5, 6) ]
+                before_break = tuple(range(0, break_slot_idx))
+                after_break = tuple(range(break_slot_idx + 1, len(TIMES)))
+                sessions = [before_break, after_break]
                 random.shuffle(sessions)
                 
                 for session in sessions:
@@ -584,9 +610,9 @@ async def generate_timetable(body: GenerateRequest, db=Depends(get_db), user=Dep
                 log.append(f"[CSP]   ✗ Could not find a contiguous {n_classes}h block for Lab {a['subject_name']} in Lab {dept_lab_id}")
 
         # SCHEDULE THEORY
-        for day in DAYS:
+        for day in LOCAL_DAYS:
             for slot_idx in range(len(TIMES)):
-                if slot_idx == BREAK_SLOT:
+                if slot_idx == break_slot_idx:
                     dept_snapshot.setdefault(day, []).append({
                         "slot_index": slot_idx, "slot_time": TIMES[slot_idx], "is_break": 1
                     })
@@ -649,6 +675,10 @@ async def generate_timetable(body: GenerateRequest, db=Depends(get_db), user=Dep
                     if sid in no_consecutive_subjects and slot_idx > 0:
                         prev = grade_schedule.get((day, slot_idx - 1))
                         if prev and prev[1] == sid:
+                            continue
+
+                    if sid in subject_preferred_slots:
+                        if slot_idx not in subject_preferred_slots[sid]:
                             continue
 
                     # Room assignment (draft only)

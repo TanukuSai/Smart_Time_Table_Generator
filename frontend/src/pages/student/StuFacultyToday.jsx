@@ -8,33 +8,36 @@ export default function StuFacultyToday() {
   const [timetable, setTimetable] = useState({})
 
   useEffect(() => {
-    api.get('/faculty').then(r => setFaculty(r.data)).finally(() => setLoading(false))
-    api.get('/timetable').then(r => setTimetable(r.data)).catch(() => {})
+    const todayStr = new Date().toLocaleDateString('en-CA')
+    api.get(`/faculty?date=${todayStr}`).then(r => setFaculty(r.data)).finally(() => setLoading(false))
+    api.get(`/timetable?date=${todayStr}`).then(r => setTimetable(r.data)).catch(() => {})
   }, [])
 
-  const present = faculty.filter(f => f.is_present)
-  const absent = faculty.filter(f => !f.is_present)
-
-  // Extract today's substitutions from timetable data
-  const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-  const todayDay = DAYS[new Date().getDay() - 1] || 'Mon'
+  const jsDay = new Date().getDay()
+  const todayDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][jsDay]
   const todaySubs = []
   let hasClassesToday = false
+  const facultyNamesToday = new Set()
 
   Object.entries(timetable).forEach(([deptName, dept]) => {
     const daySlots = dept?.days?.[todayDay] || []
     
-    // Check if there's any actual class today
-    if (daySlots.some(slot => !slot.is_break && slot.subject_name)) {
-      hasClassesToday = true
-    }
-
     daySlots.forEach(slot => {
+      if (!slot.is_break && slot.subject_name) {
+        hasClassesToday = true
+        if (slot.faculty_name) facultyNamesToday.add(slot.faculty_name)
+        if (slot.original_faculty_name) facultyNamesToday.add(slot.original_faculty_name)
+        if (slot.substitute_faculty_name) facultyNamesToday.add(slot.substitute_faculty_name)
+      }
       if (slot.is_substituted) {
         todaySubs.push({ ...slot, department_name: deptName })
       }
     })
   })
+
+  const relevantFaculty = faculty.filter(f => facultyNamesToday.has(f.name))
+  const present = relevantFaculty.filter(f => f.is_present)
+  const absent = relevantFaculty.filter(f => !f.is_present)
 
   const FacultyCard = ({ f }) => (
     <div style={{

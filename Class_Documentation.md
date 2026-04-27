@@ -177,6 +177,22 @@ Represents configurable scheduling rules.
 
 ---
 
+## 13. TimetableGenerator (Service)
+Handles the Constraint Satisfaction Problem (CSP) logic for dynamic scheduling and enforcing custom constraints.
+**Attributes:**
+- `slots_per_day` (Integer)
+- `working_days` (Integer)
+- `start_time` (Text)
+- `class_duration` (Integer)
+- `break_duration` (Integer)
+
+**Methods:**
+- `generate_timetable(department_ids, opts)`
+- `pre_schedule_labs()`
+- `enforce_theory_constraints()`
+
+---
+
 ## Junction Tables
 These represent many-to-many relationships in the database schema:
 - **`faculty_subjects`**: Links `faculty_id` to `subject_id`.

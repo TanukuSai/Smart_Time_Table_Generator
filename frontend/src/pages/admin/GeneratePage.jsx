@@ -8,7 +8,7 @@ export default function GeneratePage() {
   const [departments, setGrades] = useState([])
   const [selGrades, setSelGrades] = useState([])
   const [constraints, setConstraints] = useState([])
-  const [opts, setOpts] = useState({ slots_per_day: 6 })
+  const [opts, setOpts] = useState({ slots_per_day: 6, start_time: "08:00", class_duration: 45, break_duration: 45, working_days: 6 })
   const [log, setLog] = useState('Awaiting generation...')
   const [loading, setLoading] = useState(false)
   const [generated, setGenerated] = useState(false)
@@ -70,11 +70,29 @@ export default function GeneratePage() {
             </div>
 
             <label>Slots per Day</label>
-            <select value={opts.slots_per_day} onChange={e => setOpts(p => ({...p, slots_per_day: parseInt(e.target.value)}))}>
-              <option value={5}>5 slots</option>
-              <option value={6}>6 slots</option>
-              <option value={7}>7 slots</option>
-            </select>
+            <input type="number" min="1" max="15" value={opts.slots_per_day} onChange={e => setOpts(p => ({...p, slots_per_day: parseInt(e.target.value)}))} />
+
+            <div className="grid2" style={{ marginTop: 10 }}>
+              <div>
+                <label>College Start Time</label>
+                <input type="time" value={opts.start_time} onChange={e => setOpts(p => ({...p, start_time: e.target.value}))} />
+              </div>
+              <div>
+                <label>Class Duration (mins)</label>
+                <input type="number" min="15" value={opts.class_duration} onChange={e => setOpts(p => ({...p, class_duration: parseInt(e.target.value)}))} />
+              </div>
+            </div>
+            
+            <div className="grid2" style={{ marginTop: 10 }}>
+              <div>
+                <label>Break Duration (mins)</label>
+                <input type="number" min="0" value={opts.break_duration} onChange={e => setOpts(p => ({...p, break_duration: parseInt(e.target.value)}))} />
+              </div>
+              <div>
+                <label>Working Days (1-7)</label>
+                <input type="number" min="1" max="7" value={opts.working_days} onChange={e => setOpts(p => ({...p, working_days: parseInt(e.target.value)}))} />
+              </div>
+            </div>
           </div>
 
           {/* Active constraints summary */}

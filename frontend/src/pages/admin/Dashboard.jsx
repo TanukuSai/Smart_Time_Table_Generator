@@ -13,7 +13,8 @@ export default function Dashboard() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    api.get('/faculty').then(r => setFaculty(r.data)).catch(() => {})
+    const todayStr = new Date().toLocaleDateString('en-CA')
+    api.get(`/faculty?date=${todayStr}`).then(r => setFaculty(r.data)).catch(() => {})
     api.get('/leaves').then(r => setLeaves(r.data)).catch(() => {})
     api.get('/rooms').then(r => setRooms(r.data)).catch(() => {})
     api.get('/departments').then(r => setGrades(r.data)).catch(() => {})
@@ -23,7 +24,7 @@ export default function Dashboard() {
 
   const absent = faculty.filter(f => !f.is_present)
   const pending = leaves.filter(l => l.status === 'pending')
-  const today = new Date().toISOString().split('T')[0]
+  const today = new Date().toLocaleDateString('en-CA')
   const todaySubs = substitutions.filter(s => s.leave_date === today)
   const filledToday = todaySubs.filter(s => s.substitute_faculty_name)
   const unfilledToday = todaySubs.filter(s => !s.substitute_faculty_name)

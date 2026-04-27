@@ -1,10 +1,13 @@
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-const DAY_FULL = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday' }
+const ALL_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const DAY_FULL = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' }
 
 export default function TimetableGrid({ data, highlightFaculty }) {
   if (!data || !Object.keys(data).length) {
     return <div className="empty-state">No timetable data available.</div>
   }
+
+  const DAYS = ALL_DAYS.filter(d => data[d] && data[d].length > 0)
+  if (DAYS.length === 0) DAYS.push('Mon', 'Tue', 'Wed', 'Thu', 'Fri')
 
   const allSlots = Object.values(data)[0] || []
   const numSlots = allSlots.length

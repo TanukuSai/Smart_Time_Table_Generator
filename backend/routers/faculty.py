@@ -23,10 +23,16 @@ class FacultyUpdate(BaseModel):
     grade_subject_pairs: Optional[List[dict]] = None
 
 @router.get("")
-async def list_faculty(db=Depends(get_db), user=Depends(get_current_user)):
+async def list_faculty(db=Depends(get_db), user=Depends(get_current_user), date: Optional[str] = None):
     admin_id = get_admin_id(user)
-    from datetime import date
-    today_str = date.today().isoformat()
+    from datetime import date as dt_date, datetime
+    if date:
+        try:
+            today_str = datetime.strptime(date, "%Y-%m-%d").date().isoformat()
+        except ValueError:
+            today_str = dt_date.today().isoformat()
+    else:
+        today_str = dt_date.today().isoformat()
 
     rows = await db.fetch("""
         SELECT f.id, f.employee_code, f.max_weekly_hours, f.is_present as manual_is_present,
@@ -136,7 +142,7 @@ async def delete_faculty(fac_id: int, db=Depends(get_db), user=Depends(require_a
     return {"message": "Deleted"}
 
 @router.get("/me/schedule")
-async def my_schedule(db=Depends(get_db), user=Depends(get_current_user)):
+async def my_schedule(db=Depends(get_db), user=Depends(get_current_user), date: Optional[str] = None):
     if user["role"] != "faculty":
         raise HTTPException(403, "Faculty only")
     fac = await db.fetchrow("SELECT id FROM faculty WHERE user_id = $1", int(user["sub"]))
@@ -156,9 +162,16 @@ async def my_schedule(db=Depends(get_db), user=Depends(get_current_user)):
 
     result = [dict(r) for r in rows]
 
-    # Overlay substitution duties (slots where this faculty is the substitute)
-    from datetime import date, timedelta
-    today = date.today()
+    # Overlay substitution duties
+    from datetime import date as dt_date, timedelta, datetime
+    if date:
+        try:
+            today = datetime.strptime(date, "%Y-%m-%d").date()
+        except ValueError:
+            today = dt_date.today()
+    else:
+        today = dt_date.today()
+        
     tomorrow = today + timedelta(days=1)
     today_str = today.isoformat()
     tomorrow_str = tomorrow.isoformat()
@@ -169,21 +182,26 @@ async def my_schedule(db=Depends(get_db), user=Depends(get_current_user)):
                s.name as subject_name,
                g.name as grade_name,
                ts.slot_time,
-               lr.leave_date
+               lr.leave_date,
+               sub.original_faculty_id,
+               sub.substitute_faculty_id
         FROM substitutions sub
         JOIN leave_requests lr ON sub.leave_request_id = lr.id
         LEFT JOIN faculty f_orig ON sub.original_faculty_id = f_orig.id
         LEFT JOIN users u_orig ON f_orig.user_id = u_orig.id
+        LEFT JOIN faculty f_sub ON sub.substitute_faculty_id = f_sub.id
+        LEFT JOIN users u_sub ON f_sub.user_id = u_sub.id
         LEFT JOIN subjects s ON sub.subject_id = s.id
         LEFT JOIN departments g ON sub.department_id = g.id
         LEFT JOIN timetable_slots ts ON sub.timetable_slot_id = ts.id
-        WHERE sub.substitute_faculty_id = $1
+        WHERE (sub.substitute_faculty_id = $1 OR sub.original_faculty_id = $1)
           AND lr.status = 'approved'
-          AND sub.status = 'auto_assigned'
+          AND sub.status IN ('auto_assigned', 'no_substitute', 'manually_assigned')
           AND lr.leave_date IN ($2, $3)
     """, fac["id"], today_str, tomorrow_str)
 
     for sr in sub_rows:
+        is_sub = sr["substitute_faculty_id"] == fac["id"]
         result.append({
             "day": sr["day"],
             "slot_index": sr["slot_index"],
@@ -192,7 +210,9 @@ async def my_schedule(db=Depends(get_db), user=Depends(get_current_user)):
             "subject_name": sr["subject_name"],
             "grade_name": sr["grade_name"],
             "room_id": None,
-            "is_substitution": True,
+            "is_substitution": is_sub,
+            "is_absent": not is_sub,
+            "substitute_faculty_name": sr["substitute_faculty_name"],
             "original_faculty_name": sr["original_faculty_name"],
             "leave_date": sr["leave_date"]
         })
@@ -201,7 +221,7 @@ async def my_schedule(db=Depends(get_db), user=Depends(get_current_user)):
 
 
 @router.get("/me/substitutions")
-async def my_substitutions(db=Depends(get_db), user=Depends(get_current_user)):
+async def my_substitutions(db=Depends(get_db), user=Depends(get_current_user), date: Optional[str] = None):
     """Get all upcoming substitution assignments for the logged-in faculty."""
     if user["role"] != "faculty":
         raise HTTPException(403, "Faculty only")
@@ -209,8 +229,14 @@ async def my_substitutions(db=Depends(get_db), user=Depends(get_current_user)):
     if not fac:
         raise HTTPException(404, "Faculty profile not found")
 
-    from datetime import date
-    today_str = date.today().isoformat()
+    from datetime import date as dt_date, datetime
+    if date:
+        try:
+            today_str = datetime.strptime(date, "%Y-%m-%d").date().isoformat()
+        except ValueError:
+            today_str = dt_date.today().isoformat()
+    else:
+        today_str = dt_date.today().isoformat()
 
     rows = await db.fetch("""
         SELECT sub.day, sub.slot_index, sub.department_id, sub.subject_id,
@@ -229,7 +255,7 @@ async def my_substitutions(db=Depends(get_db), user=Depends(get_current_user)):
         LEFT JOIN timetable_slots ts ON sub.timetable_slot_id = ts.id
         WHERE sub.substitute_faculty_id = $1
           AND lr.status = 'approved'
-          AND sub.status = 'auto_assigned'
+          AND sub.status IN ('auto_assigned', 'manually_assigned')
           AND lr.leave_date >= $2
         ORDER BY lr.leave_date ASC, sub.slot_index ASC
     """, fac["id"], today_str)

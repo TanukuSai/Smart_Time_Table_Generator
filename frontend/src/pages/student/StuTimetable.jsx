@@ -9,7 +9,8 @@ export default function StuTimetable() {
   const { user } = useAuth()
 
   useEffect(() => {
-    api.get('/timetable').then(r => {
+    const todayStr = new Date().toLocaleDateString('en-CA')
+    api.get(`/timetable?date=${todayStr}`).then(r => {
       setAll(r.data)
     }).finally(() => setLoading(false))
   }, [])
