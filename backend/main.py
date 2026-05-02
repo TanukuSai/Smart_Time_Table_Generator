@@ -15,13 +15,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="STTG API", version="2.0.0", lifespan=lifespan)
 
-# CORS: allow localhost for dev + production Vercel URL via ALLOWED_ORIGINS env var
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
-
+# CORS: allow all origins for deployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
