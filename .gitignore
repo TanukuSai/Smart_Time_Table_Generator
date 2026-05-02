@@ -1,2 +1,46 @@
+# Environment
 .env
 backend/.env
+
+# Dependencies
+node_modules/
+frontend/node_modules/
+__pycache__/
+backend/__pycache__/
+backend/routers/__pycache__/
+
+# Database
+*.db
+backend/*.db
+
+# Build output
+frontend/dist/
+
+# Documentation, PPT, images (not part of the app)
+*.docx
+*.pptx
+*.pdf
+Outputs/
+Outputs  for PPT/
+Other Things/
+Diagrams and generators/
+extracted_images/
+word/
+Class Diagram Final.png
+Class_Documentation.md
+Project_Documentation.md
+
+# Generator scripts
+generate_doc.py
+extract_doc.py
+docx_extracted/
+docx_content.xml
+docx_styles.xml
+
+# Temp / lock files
+~$*
+*.pyc
+*.pyo
+
+# Misc
+{backend,frontend/
