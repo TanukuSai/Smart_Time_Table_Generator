@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 import database
 from routers import auth, faculty, rooms, timetable, leaves, departments, subjects, constraints
 import uvicorn
+import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,9 +15,12 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="STTG API", version="2.0.0", lifespan=lifespan)
 
+# CORS: allow localhost for dev + production Vercel URL via ALLOWED_ORIGINS env var
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,4 +40,6 @@ async def health():
     return {"status": "ok", "service": "STTG API", "database": "supabase"}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
+
